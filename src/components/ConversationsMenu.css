@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.conversations-menu {
+    @apply h-full w-64 flex flex-col bg-white shadow-lg z-10;
+}
+
+.new-conversation-button {
+    @apply mx-4 mt-4 mb-6 py-2.5 px-4 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-150;
+}
+
+.conversation-list {
+    @apply flex-1 overflow-y-auto px-4 pb-4 space-y-1;
+}
+
+.conversation-item {
+    @apply relative p-3 rounded-md hover:bg-gray-50 cursor-pointer transition-all duration-150 border border-transparent;
+}
+
+.conversation-item:hover {
+    @apply bg-gray-100 transform scale-105;
+}
+
+.conversation-name {
+    @apply font-medium text-gray-900 text-sm;
+}
+
+.message-count {
+    @apply text-xs text-gray-500 mt-0.5;
+}
+
+.conversation-item.selected {
+    @apply bg-green-50 border-green-400 shadow-sm;
+}
+
+.conversation-item.selected .conversation-name {
+    @apply font-bold text-green-700;
+}
+
+.conversation-content {
+    @apply flex-1 min-w-0 pr-2;
+}
+
+.conversation-item.selected .message-count {
+    @apply text-blue-500;
+}
+
+.delete-button {
+    @apply absolute right-0 top-1/2 transform -translate-y-1/2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer hover:bg-red-600 transition-all duration-200;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.conversation-item:hover .delete-button {
+    @apply opacity-100 pointer-events-auto; /* Show button on hover */
+} 
+.delete-button:hover {
+    @apply bg-red-600 shadow-md;
+}
+
+.delete-button:active {
+    @apply transform scale-95;
+}
+
+.conversation-item.selected .delete-button {
+    @apply opacity-70 hover:opacity-100;
+}
+
+/* Smooth scrollbar styling */
+.conversation-list::-webkit-scrollbar {
+    @apply w-2;
+}
+
+.conversation-list::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+}
+
+.conversation-list::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+}
+
+/* Animation for new conversations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.conversation-item {
+    animation: slideIn 0.3s ease-out;
+}
+
+.conversation-item:not(.selected):hover {
+    @apply shadow-lg;
+}
+
+.conversation-item:not(.selected):hover .conversation-name {
+    @apply text-gray-800;
+}
+
+.conversation-item:not(.selected):hover .message-count {
+    @apply text-gray-600;
+}
+
+/* Focus states for accessibility */
+.conversation-item:focus-within {
+    @apply ring-2 ring-blue-500 ring-offset-2;
+}
+
+.new-conversation-button:focus {
+    @apply ring-2 ring-gray-500 ring-offset-2;
+}
+
+.delete-button:focus {
+    @apply ring-2 ring-red-500 ring-offset-2;
+}

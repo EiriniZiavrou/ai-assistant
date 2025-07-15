@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.top-menu {
+    @apply flex items-center justify-between bg-white shadow-md h-[70px] px-[20px] relative;
+}
+
+.logo-and-title {
+    @apply flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 gap-3 text-xl font-semibold text-gray-800;
+}
+
+.menu-button {
+    @apply w-[28px] h-[28px] cursor-pointer hover:opacity-80 transition-opacity;
+}
+
+.logo-button {
+    @apply w-[103.18px] h-[50px] object-cover cursor-pointer hover:opacity-90 transition-opacity;
+}
+
+.user-profile-button {
+    @apply flex items-center justify-center rounded-full w-[40px] h-[40px] bg-black border-none cursor-pointer hover:opacity-80 transition-opacity;
+}
+
+.user-profile-img {
+    @apply w-[30px] h-[30px] object-cover rounded-full;
+}

@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.message-input {
+    @apply p-4 bg-gradient-to-r from-emerald-50 to-green-100 border-t border-green-200 shadow-lg;
+}
+
+.input-container {
+    @apply flex items-end gap-3 max-w-4xl mx-auto relative;
+}
+
+.message-textarea {
+    @apply flex-1 resize-none rounded-2xl border border-green-300 px-4 py-3 text-green-900 placeholder-green-500 bg-white shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50 transition-all duration-200 min-h-[50px] max-h-32 overflow-y-auto;
+    field-sizing: content;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 15px;
+}
+
+.message-textarea:hover {
+    @apply border-green-400 shadow-md;
+}
+
+.message-textarea:focus {
+    @apply outline-none shadow-lg transform scale-[1.01];
+}
+
+.message-textarea:disabled {
+    @apply bg-green-100 text-green-400 cursor-not-allowed border-green-200;
+}
+
+.send-button {
+    @apply px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-sm;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    letter-spacing: 0.025em;
+}
+
+.send-button:focus:not(:disabled) {
+    @apply ring-4 ring-emerald-400 ring-opacity-30;
+}
+
+.send-button:hover:not(:disabled) {
+    @apply shadow-2xl shadow-emerald-500/25;
+}
+
+.send-button:active:not(:disabled) {
+    @apply transform scale-95;
+}
+
+.send-button:disabled {
+    @apply opacity-60;
+}
+
+.message-textarea::-webkit-scrollbar {
+    @apply w-1.5;
+}
+
+.message-textarea::-webkit-scrollbar-track {
+    @apply bg-transparent;
+    margin: 8px;
+}
+
+.message-textarea::-webkit-scrollbar-thumb {
+    @apply bg-green-300 rounded-full;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.message-textarea::-webkit-scrollbar-thumb:hover {
+    @apply bg-green-400;
+}
+
+@media (max-width: 640px) {
+    .message-input {
+        @apply p-3;
+    }
+    
+    .input-container {
+        @apply gap-2;
+    }
+    
+    .message-textarea {
+        @apply px-3 py-2 text-sm;
+    }
+    
+    .send-button {
+        @apply px-4 py-2 text-sm;
+    }
+}
+
+/* Animation for form appearance */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-input {
+    animation: slideUp 0.3s ease-out;
+}
+
+.input-container:focus-within .send-button:not(:disabled) {
+    @apply shadow-xl;
+}
+
+.message-textarea::placeholder {
+    @apply text-green-400 italic;
+}
+
+.message-textarea:disabled::placeholder {
+    @apply text-green-300;
+}
+
+/* Loading state animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.send-button.loading {
+    @apply pointer-events-none;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.message-textarea,
+.send-button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
