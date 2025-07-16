@@ -1,12 +1,12 @@
 import './ConversationsMenu.css';
 
-export default function ConversationsMenu({ conversations, onConversationSelect, selectedConversationId, onConversationCreate }) {
+export default function ConversationsMenu({ conversations, onConversationSelect, selectedConversationId, onConversationCreate, onConversationDelete }) {
 
     function handleDeleteClick(e, conversationId) {
         e.stopPropagation();
-        // if (onConversationDelete) {
-        //     onConversationDelete(conversationId);
-        // }
+        if (onConversationDelete) {
+            onConversationDelete(conversationId);
+        }
     }
     
     return (

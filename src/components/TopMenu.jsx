@@ -1,9 +1,10 @@
 import './TopMenu.css';
 
-export default function TopMenu({ title = 'Conversation' }) {
+export default function TopMenu({ title = 'Conversation', onMenuToggle }) {
+
     return (
         <div className="top-menu">
-            <button onClick={() => { console.log('Conversations button clicked'); }} >
+            <button onClick={onMenuToggle}>
                 <img
                     className="menu-button"
                     alt="Conversations"

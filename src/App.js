@@ -11,12 +11,14 @@ const initialConversations = [
   { id: 3, name: 'Jokes & Fun', messages: [{ id: 1, text: 'Tell me a joke', role: 'user' }, { id: 2, text: 'Why did the chicken cross the road? To get to the other side!', role: 'assistant' }] },
 ];
 
+let convCounter = initialConversations.length;
 
 function App() {
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(null);
   const [conversations, setConversations] = useState(initialConversations);
   const selectedConversation = conversations[selectedConversationIndex] || { id: -1, name: 'Select a Conversation', messages: null };
   const [shouldRespond, setShouldRespond] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   function handleConversationSelect(conversation) {
     const conversationIndex = conversations.findIndex(conv => conv.id === conversation.id);
@@ -24,9 +26,18 @@ function App() {
   }
 
   function handleConversationCreate() {
-    const newConversation = { id: conversations.length + 1, name: `Conversation ${conversations.length + 1}`, messages: [] };
+    const newConversation = { id: ++convCounter, name: `Conversation ${convCounter}`, messages: [] };
     setConversations([...conversations, newConversation]);
     setSelectedConversationIndex(conversations.length);
+  }
+
+  function onConversationDelete(conversationId) {
+    console.log('Deleting conversation with ID:', conversationId);
+    setConversations(prevConversations => prevConversations.filter(conv => conv.id !== conversationId));
+    if (selectedConversationIndex !== null && selectedConversation.id === conversationId) {
+      setSelectedConversationIndex(null);
+    }
+    console.log(conversations);
   }
 
   async function handleSendMessage(message) {
@@ -37,7 +48,7 @@ function App() {
     };
 
     if (selectedConversation.messages.length === 0) {
-      const title = [{id:selectedConversation.messages.length + 1, content: message, role:'user'}, { id: 0, content: "Suggest a short, descriptive title for this conversation.", role: "user" }];
+      const title = [{ id: selectedConversation.messages.length + 1, content: message, role: 'user' }, { id: 0, content: "Suggest a short, descriptive title for this conversation.", role: "user" }];
       setShouldRespond(true);
       const aiTitleResponse = await OpenAIService.sendMessage(title);
       selectedConversation.name = aiTitleResponse.replace(/^"(.*)"$/, '$1');
@@ -97,11 +108,23 @@ function App() {
     }
   }
 
+  function toggleMenu() {
+    setIsMenuOpen(!isMenuOpen);
+  }
+
   return (
     <div className="App">
-      <TopMenu title={selectedConversation.name}></TopMenu>
+      <TopMenu title={selectedConversation.name} onMenuToggle={toggleMenu}></TopMenu>
       <div className="main-content">
-        <ConversationsMenu onConversationSelect={handleConversationSelect} conversations={conversations} selectedConversationId={selectedConversation.id} onConversationCreate={handleConversationCreate}></ConversationsMenu>
+        {isMenuOpen && (
+          <ConversationsMenu
+            onConversationSelect={handleConversationSelect}
+            conversations={conversations}
+            selectedConversationId={selectedConversation.id}
+            onConversationCreate={handleConversationCreate}
+            onConversationDelete={onConversationDelete}>
+          </ConversationsMenu>
+        )}
         <MessagesView messages={selectedConversation.messages} onSendMessage={handleSendMessage} hasConversation={!!selectedConversation}></MessagesView>
       </div>
     </div>
