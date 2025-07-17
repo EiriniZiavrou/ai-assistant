@@ -1,3 +1,4 @@
+import Switch from './Switch';
 import './TopMenu.css';
 
 export default function TopMenu({ title = 'Conversation', onMenuToggle }) {
@@ -23,16 +24,7 @@ export default function TopMenu({ title = 'Conversation', onMenuToggle }) {
                 </button>
                 {title}
             </div>
-            <button
-                className="user-profile-button"
-                onClick={() => console.log('User profile button clicked')}
-            >
-                <img
-                    className="user-profile-img"
-                    alt="User profile"
-                    src="/images/user-profile.svg"
-                />
-            </button>
+            <Switch ></Switch>
         </div>
     );
 }

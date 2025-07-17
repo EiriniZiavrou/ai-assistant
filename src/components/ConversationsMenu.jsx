@@ -30,7 +30,11 @@ export default function ConversationsMenu({ conversations, onConversationSelect,
                             onClick={(e) => handleDeleteClick(e, conversation.id)}
                             title="Delete conversation"
                         >
-                            ×
+                            <img
+                                className='delete-icon'
+                                alt="Delete"
+                                src="/images/delete.svg"
+                            />
                         </button>
                     </li>
                 ))}

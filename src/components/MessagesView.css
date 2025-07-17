@@ -28,6 +28,30 @@
     @apply justify-start;
 }
 
+.message-item.copied {
+    animation: copied-animation 0.5s;
+}
+
+/* Keyframes for the copied animation */
+@keyframes copied-animation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    20% {
+        transform: scale(1.02);
+        opacity: 0.98;
+    }
+    80% {
+        transform: scale(1.01);
+        opacity: 0.98;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 .message-text {
     @apply max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed break-words;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -50,7 +74,7 @@
 }
 
 .no-messages {
-    @apply flex items-center justify-center h-full text-gray-500 text-center;
+    @apply flex items-center justify-center flex-1 text-gray-500 text-center;
 }
 
 .no-messages::before {
@@ -169,4 +193,69 @@
 
 .message-item.user .message-text::selection {
     @apply bg-white/30 text-white;
+}
+
+/* Dark mode styles */
+.dark .messages-view {
+    @apply bg-gray-950 text-gray-100;
+}
+
+.dark .messages-container {
+    @apply bg-gray-900 border border-gray-700 shadow-lg;
+}
+
+.dark .message-item.user .message-text {
+    @apply bg-gradient-to-r from-teal-600 to-emerald-700 text-white shadow-lg;
+}
+
+.dark .message-item.assistant .message-text {
+    @apply bg-gradient-to-r from-gray-700 to-gray-800 text-gray-200 border border-gray-600 shadow-md; 
+}
+
+.dark .no-messages {
+    @apply text-gray-500;
+}
+
+.dark .messages-view .no-messages{
+    @apply bg-gray-900 text-gray-200;
+} 
+
+.dark .message-timestamp {
+    @apply text-gray-400;
+}
+
+.dark .message-status {
+    @apply text-gray-400;
+}
+
+.dark .messages-container::-webkit-scrollbar {
+    @apply w-2;
+}
+
+.dark .messages-container::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded-full;
+}
+
+.dark .messages-container::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+}
+
+.dark .messages-container::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+}
+
+.dark .message-item.user .message-text:hover {
+    @apply shadow-xl shadow-teal-500/30 transform scale-[1.03];
+}
+
+.dark .message-item.assistant .message-text:hover {
+    @apply shadow-lg shadow-gray-600/25 transform scale-[1.03];
+}
+
+.dark .message-text::selection {
+    @apply bg-teal-700 text-white;
+}
+
+.dark .message-item.user .message-text::selection {
+    @apply bg-emerald-800 text-white;
 }

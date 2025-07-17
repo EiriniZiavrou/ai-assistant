@@ -1,7 +1,18 @@
 import './MessagesView.css';
 import MessageInput from './MessageInput';
+import { useState } from 'react';
 
 export default function MessagesView({ messages, onSendMessage, hasConversation }) {
+
+    const [copiedMessageId, setCopiedMessageId] = useState(null);
+
+    const handleCopyText = (text, messageId) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopiedMessageId(messageId);
+            setTimeout(() => setCopiedMessageId(null), 2000);
+        });
+    };
+
     if (!messages) {
         return (
             <div className="messages-view">
@@ -19,8 +30,15 @@ export default function MessagesView({ messages, onSendMessage, hasConversation 
                 ) : (
                     <ul className="message-list">
                         {messages.map((message) => (
-                            <li key={message.id} className={`message-item ${message.role}`}>
-                                <span className="message-text">{message.text}</span>
+                            <li key={message.id} className={`message-item ${message.role} ${copiedMessageId === message.id ? 'copied' : ''}`}>
+                                <span
+                                    className="message-text"
+                                    onClick={() => handleCopyText(message.text, message.id)}
+                                    title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {message.text}
+                                </span>
                             </li>
                         ))}
                     </ul>

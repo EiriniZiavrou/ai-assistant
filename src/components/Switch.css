@@ -1,0 +1,23 @@
+.switch-container {
+    @apply flex cursor-pointer select-none items-center;
+}
+
+.switch-track {
+    @apply relative block h-8 w-16 rounded-full bg-gray-400 transition-colors duration-300 ease-in-out;
+}
+
+.switch-checked {
+    @apply bg-gradient-to-r from-emerald-500 to-green-600;
+}
+
+.switch-thumb {
+    @apply absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow-md flex items-center justify-center transition-transform duration-300 ease-in-out;
+}
+
+.switch-thumb-checked {
+    @apply translate-x-8;
+}
+
+.switch-icon {
+    @apply h-4 w-4;
+}

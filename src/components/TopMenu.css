@@ -18,10 +18,23 @@
     @apply w-[103.18px] h-[50px] object-cover cursor-pointer hover:opacity-90 transition-opacity;
 }
 
-.user-profile-button {
-    @apply flex items-center justify-center rounded-full w-[40px] h-[40px] bg-black border-none cursor-pointer hover:opacity-80 transition-opacity;
+/* Dark mode styles */
+.dark .top-menu {
+    @apply bg-gray-800 shadow-md;
 }
 
-.user-profile-img {
-    @apply w-[30px] h-[30px] object-cover rounded-full;
+.dark .logo-and-title {
+    @apply text-gray-100;
+}
+
+.dark .menu-button {
+    @apply hover:opacity-80 transition-opacity;
+}
+
+.dark .logo-button {
+    @apply hover:opacity-90 transition-opacity;
+}
+
+.dark .menu-button {
+    filter: invert(85%) sepia(20%) saturate(200%) hue-rotate(180deg) brightness(90%) contrast(90%);
 }
