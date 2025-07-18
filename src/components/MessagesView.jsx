@@ -2,7 +2,7 @@ import './MessagesView.css';
 import MessageInput from './MessageInput';
 import { useState } from 'react';
 
-export default function MessagesView({ messages, onSendMessage, hasConversation }) {
+export default function MessagesView({ messages, onSendMessage, hasConversation, onModelChange }) {
 
     const [copiedMessageId, setCopiedMessageId] = useState(null);
 
@@ -17,7 +17,7 @@ export default function MessagesView({ messages, onSendMessage, hasConversation 
         return (
             <div className="messages-view">
                 <div className="no-messages">Select a conversation to view messages</div>
-                <MessageInput disabled={true} />
+                <MessageInput onModelChange={onModelChange} disabled={true} />
             </div>
         );
     }
@@ -44,7 +44,7 @@ export default function MessagesView({ messages, onSendMessage, hasConversation 
                     </ul>
                 )}
             </div>
-            <MessageInput onSendMessage={onSendMessage} disabled={!hasConversation} />
+            <MessageInput onSendMessage={onSendMessage} disabled={!hasConversation} onModelChange={onModelChange} />
         </div>
     );
 }

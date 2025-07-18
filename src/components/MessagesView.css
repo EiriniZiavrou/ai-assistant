@@ -152,10 +152,6 @@
     .message-text {
         @apply max-w-[280px] px-3 py-2 text-sm;
     }
-    
-    .no-messages {
-        @apply mx-4 my-8 p-8 text-sm;
-    }
 }
 
 @media (max-width: 480px) {

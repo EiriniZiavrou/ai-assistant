@@ -141,8 +141,41 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.input-container select {
+    @apply max-w-xs md:max-w-sm lg:max-w-md px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 16px;
+}
+
+.input-container select:focus {
+    @apply bg-white z-10 shadow-lg border-green-500;
+}
+
+.input-container select option {
+    @apply text-gray-700 bg-white;
+}
+
+.input-container select option:hover {
+    @apply bg-green-900 text-green-800;
+}
+
+.input-container {
+    @apply flex flex-row items-center justify-center gap-2;
+}
 
 /* Dark mode styles */
+.dark .input-container select {
+    @apply bg-gray-800 text-gray-100 border-gray-600 shadow-md focus:ring-teal-500 focus:border-teal-500;
+}
+
+.dark .input-container select option {
+    @apply bg-gray-800 text-gray-300;
+}
+
+.dark .input-container select option:hover {
+    @apply bg-teal-600 text-gray-100;
+}
+
 .dark .message-input {
     @apply bg-gradient-to-r from-gray-800 to-gray-900 border-gray-700 shadow-md;
 }

@@ -1,7 +1,7 @@
 import { CONFIG } from './config';
 
 export class OpenAIService {
-    static async sendMessage(conversationHistory) {
+    static async sendMessage(conversationHistory, model = CONFIG.DEFAULT_MODEL) {
         try {
             console.log('Conversation history:', conversationHistory);
 
@@ -12,7 +12,7 @@ export class OpenAIService {
                     'Authorization': `Bearer ${CONFIG.OPENAI_API_KEY}`
                 },
                 body: JSON.stringify({
-                    model: CONFIG.DEFAULT_MODEL,
+                    model: model,
                     messages: conversationHistory,
                     max_tokens: 4096
                 })
@@ -23,6 +23,7 @@ export class OpenAIService {
             }
 
             const data = await response.json();
+            console.log('Model used: ', data.model);
             return data.choices[0].message.content;
         } catch (error) {
             console.error('Error calling OpenAI API:', error);

@@ -4,6 +4,7 @@ import TopMenu from './components/TopMenu';
 import ConversationsMenu from './components/ConversationsMenu';
 import MessagesView from './components/MessagesView';
 import { OpenAIService } from './services/OpenaiService';
+import { CONFIG } from './services/config';
 
 const initialConversations = [
   { id: 1, name: 'General Chat', messages: [{ id: 1, text: 'Hello!', role: 'user' }, { id: 2, text: 'Hi there! How can I help you?', role: 'assistant' }] },
@@ -13,12 +14,18 @@ const initialConversations = [
 
 let convCounter = initialConversations.length;
 
+
 function App() {
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(null);
   const [conversations, setConversations] = useState(initialConversations);
   const selectedConversation = conversations[selectedConversationIndex] || { id: -1, name: 'Select a Conversation', messages: null };
   const [shouldRespond, setShouldRespond] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [model, setModel] = useState(CONFIG.DEFAULT_MODEL);
+
+  function handleModelChange(newModel) {
+    setModel(newModel);
+  }
 
   function handleConversationSelect(conversation) {
     const conversationIndex = conversations.findIndex(conv => conv.id === conversation.id);
@@ -74,9 +81,13 @@ function App() {
   async function handleResponse() {
     try {
       const aiResponse = await OpenAIService.sendMessage(
-        selectedConversation.messages.map(msg => ({ content: msg.text, role: msg.role }))
+        selectedConversation.messages.map(msg => ({ content: msg.text, role: msg.role })),
+        model
       );
-
+      // These seem to be supported:
+      // gpt-4-turbo
+      // gpt-4
+      // gpt-3.5-turbo
       const assistantMessage = {
         id: selectedConversation.messages.length + 1,
         text: aiResponse,
@@ -125,7 +136,13 @@ function App() {
             onConversationDelete={onConversationDelete}>
           </ConversationsMenu>
         )}
-        <MessagesView messages={selectedConversation.messages} onSendMessage={handleSendMessage} hasConversation={!!selectedConversation}></MessagesView>
+        <MessagesView
+          messages={selectedConversation.messages}
+          onSendMessage={handleSendMessage}
+          hasConversation={!!selectedConversation}
+          onModelChange={(newModel) => {handleModelChange(newModel);}}
+        >
+        </MessagesView>
       </div>
     </div>
   );
