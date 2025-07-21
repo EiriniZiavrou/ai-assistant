@@ -1,0 +1,80 @@
+.markdown-message h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.markdown-message h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0.75rem 0;
+}
+
+.markdown-message code {
+    background-color: #374151;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+.markdown-message .rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.markdown-message a {
+    color: #2563eb;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.markdown-message a:hover {
+    color: #1e40af;
+}
+
+.markdown-message ul {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+}
+
+.code {
+    background-color: #158032;
+    color: #e5e7eb;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+/* Dark mode styles */
+.dark .code {
+    background-color: #1f2937;
+    color: #e5e7eb;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+.dark .markdown-message p {
+    color: #e5e7eb;
+}
+
+.dark .markdown-message h1,
+.dark .markdown-message h2 {
+    color: #f3f4f6;
+}
+
+.dark .markdown-message code {
+    background-color: #660b0b;
+    color: #e5e7eb;
+}
+
+.dark .markdown-message a {
+    color: #38bdf8;
+}
+
+.dark .markdown-message a:hover {
+    color: #0ea5e9;
+}
+
+.dark .markdown-message ul {
+    color: #e5e7eb;
+}

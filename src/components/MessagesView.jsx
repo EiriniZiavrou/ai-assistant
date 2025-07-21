@@ -1,6 +1,7 @@
 import './MessagesView.css';
 import MessageInput from './MessageInput';
 import { useState } from 'react';
+import {MarkdownMessage} from './MarkdownMessage.tsx';
 
 export default function MessagesView({ messages, onSendMessage, hasConversation, onModelChange }) {
 
@@ -31,14 +32,22 @@ export default function MessagesView({ messages, onSendMessage, hasConversation,
                     <ul className="message-list">
                         {messages.map((message) => (
                             <li key={message.id} className={`message-item ${message.role} ${copiedMessageId === message.id ? 'copied' : ''}`}>
-                                <span
+                                {/* <span
                                     className="message-text"
                                     onClick={() => handleCopyText(message.text, message.id)}
                                     title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
                                     style={{ cursor: 'pointer' }}
                                 >
                                     {message.text}
-                                </span>
+                                </span> */}
+                                <div
+                                    className="message-text"
+                                    onClick={() => handleCopyText(message.text, message.id)}
+                                    title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
+                                >
+                                    <MarkdownMessage content={message.text} />
+                                </div>
+
                             </li>
                         ))}
                     </ul>

@@ -53,7 +53,7 @@
 }
 
 .message-text {
-    @apply max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl px-4 py-3 rounded-2xl shadow-sm text-sm leading-relaxed break-words;
+    @apply px-4 py-3 rounded-2xl shadow-sm text-lg leading-relaxed break-words;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
@@ -143,29 +143,20 @@
     @apply text-left;
 }
 
-/* Responsive design */
-@media (max-width: 640px) {
+@media (max-width: 1000px) {
     .messages-container {
-        @apply px-4 py-3 space-y-3;
+        @apply px-4 py-3 space-y-3 text-2xl;
     }
     
     .message-text {
-        @apply max-w-[280px] px-3 py-2 text-sm;
+        @apply max-w-full px-3 py-2 text-sm;
     }
 }
 
-@media (max-width: 480px) {
-    .message-text {
-        @apply max-w-[240px];
-    }
-}
-
-/* Focus states for accessibility */
 .message-text:focus {
     @apply outline-none ring-2 ring-blue-500 ring-offset-2;
 }
 
-/* Message status indicators (for future use) */
 .message-status {
     @apply text-xs text-gray-400 mt-1;
 }
@@ -182,7 +173,6 @@
     @apply text-red-500;
 }
 
-/* Selection styling */
 .message-text::selection {
     @apply bg-blue-200 text-blue-900;
 }
