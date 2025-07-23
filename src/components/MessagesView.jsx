@@ -1,7 +1,7 @@
 import './MessagesView.css';
 import MessageInput from './MessageInput';
 import { useState } from 'react';
-import {MarkdownMessage} from './MarkdownMessage.tsx';
+import { MarkdownMessage } from './MarkdownMessage.tsx';
 
 export default function MessagesView({ messages, onSendMessage, hasConversation, onModelChange }) {
 
@@ -32,20 +32,12 @@ export default function MessagesView({ messages, onSendMessage, hasConversation,
                     <ul className="message-list">
                         {messages.map((message) => (
                             <li key={message.id} className={`message-item ${message.role} ${copiedMessageId === message.id ? 'copied' : ''}`}>
-                                {/* <span
-                                    className="message-text"
-                                    onClick={() => handleCopyText(message.text, message.id)}
-                                    title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    {message.text}
-                                </span> */}
-                                <div
-                                    className="message-text"
-                                    // onClick={() => handleCopyText(message.text, message.id)}
-                                    // title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
-                                >
-                                    <MarkdownMessage content={message.text} />
+                                <div className="message-header">
+                                    <div
+                                        className="message-text"
+                                    >
+                                        <MarkdownMessage content={message.text} />
+                                    </div>
                                     <button
                                         className="copy-button"
                                         onClick={(e) => {
@@ -56,7 +48,6 @@ export default function MessagesView({ messages, onSendMessage, hasConversation,
                                         <img src="./images/copy-icon.svg" alt="Copy" className="copy-icon" />
                                     </button>
                                 </div>
-
                             </li>
                         ))}
                     </ul>

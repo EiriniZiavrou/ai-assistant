@@ -36,7 +36,7 @@ export const MarkdownMessage = ({ content }: { content: string }) => {
                                 {String(children).replace(/\n$/, "")}
                             </SyntaxHighlighter>
                             <button
-                                className="copy-button"
+                                className="copy-code-button"
                                 style={{
                                     position: "absolute",
                                     top: "8px",
