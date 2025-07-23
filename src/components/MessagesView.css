@@ -28,11 +28,18 @@
     @apply justify-start;
 }
 
-.message-item.copied {
-    animation: copied-animation 0.5s;
+.copy-button {
+    @apply p-1 rounded-full bg-green-100 hover:bg-green-200 transition-colors duration-200 shadow focus:outline-none focus:ring-2 focus:ring-green-400;
 }
 
-/* Keyframes for the copied animation */
+.copy-icon {
+    @apply w-4 h-4;
+}
+
+/* .message-item.copied {
+    animation: copied-animation 0.5s;
+} */
+
 @keyframes copied-animation {
     0% {
         transform: scale(1);
@@ -66,11 +73,11 @@
 }
 
 .message-item.user .message-text:hover {
-    @apply shadow-xl shadow-emerald-500/25 transform scale-[1.02];
+    @apply shadow-xl shadow-emerald-500/25;
 }
 
 .message-item.assistant .message-text:hover {
-    @apply shadow-lg border-green-300 transform scale-[1.02];
+    @apply shadow-lg border-green-300;
 }
 
 .no-messages {
@@ -231,11 +238,11 @@
 }
 
 .dark .message-item.user .message-text:hover {
-    @apply shadow-xl shadow-teal-500/30 transform scale-[1.03];
+    @apply shadow-xl shadow-teal-500/30;
 }
 
 .dark .message-item.assistant .message-text:hover {
-    @apply shadow-lg shadow-gray-600/25 transform scale-[1.03];
+    @apply shadow-lg shadow-gray-600/25;
 }
 
 .dark .message-text::selection {

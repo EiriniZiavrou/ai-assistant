@@ -42,10 +42,19 @@ export default function MessagesView({ messages, onSendMessage, hasConversation,
                                 </span> */}
                                 <div
                                     className="message-text"
-                                    onClick={() => handleCopyText(message.text, message.id)}
-                                    title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
+                                    // onClick={() => handleCopyText(message.text, message.id)}
+                                    // title={copiedMessageId === message.id ? "Copied to clipboard" : "Click to copy"}
                                 >
                                     <MarkdownMessage content={message.text} />
+                                    <button
+                                        className="copy-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleCopyText(message.text, message.id);
+                                        }}
+                                    >
+                                        <img src="./images/copy-icon.svg" alt="Copy" className="copy-icon" />
+                                    </button>
                                 </div>
 
                             </li>
