@@ -1,27 +1,27 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import TopMenu from './components/TopMenu';
-import ConversationsMenu from './components/ConversationsMenu';
-import MessagesView from './components/MessagesView';
-import { OpenAIService } from './services/OpenaiService';
-import { CONFIG } from './services/config';
-
-const initialConversations = [
-  { id: 1, name: 'General Chat', messages: [{ id: 1, text: 'Hello!', role: 'user' }, { id: 2, text: 'Hi there! How can I help you?', role: 'developer' }] },
-  { id: 2, name: 'Weather Discussion', messages: [{ id: 1, text: 'What is the weather like?', role: 'user' }, { id: 2, text: 'It is sunny today!', role: 'developer' }] },
-  { id: 3, name: 'Jokes & Fun', messages: [{ id: 1, text: 'Tell me a joke', role: 'user' }, { id: 2, text: 'Why did the chicken cross the road? To get to the other side!', role: 'developer' }] },
-];
-
-let convCounter = initialConversations.length;
-
+import TopMenu from './components/TopMenu.jsx';
+import ConversationsMenu from './components/ConversationsMenu.jsx';
+import MessagesView from './components/MessagesView.jsx';
+import { OpenAIService } from './services/OpenaiService.js';
+import { CONFIG } from './services/config.js';
 
 function App() {
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(null);
-  const [conversations, setConversations] = useState(initialConversations);
+  const [conversations, setConversations] = useState([]);
   const selectedConversation = conversations[selectedConversationIndex] || { id: -1, name: 'Select a Conversation', messages: null };
   const [shouldRespond, setShouldRespond] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [model, setModel] = useState(CONFIG.DEFAULT_MODEL);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/conversations', {
+      method: 'GET'
+    })
+      .then(res => res.json())
+      .then(data => setConversations(data))
+      .catch(err => console.error('Failed to fetch conversations:', err));
+  }, []);
 
   function handleModelChange(newModel) {
     setModel(newModel);
@@ -33,18 +33,35 @@ function App() {
   }
 
   function handleConversationCreate() {
-    const newConversation = { id: ++convCounter, name: `Conversation ${convCounter}`, messages: [] };
-    setConversations([...conversations, newConversation]);
+    fetch('http://localhost:3001/conversations', {
+      method: 'POST'
+    })
+      .then(res => res.json())
+      .then(newConversation => {
+        setConversations(prev => [...prev, newConversation]);
+      })
+      .catch(err => console.error('Failed to fetch conversations:', err));
     setSelectedConversationIndex(conversations.length);
+
   }
 
   function onConversationDelete(conversationId) {
     console.log('Deleting conversation with ID:', conversationId);
-    setConversations(prevConversations => prevConversations.filter(conv => conv.id !== conversationId));
-    if (selectedConversationIndex !== null && selectedConversation.id === conversationId) {
-      setSelectedConversationIndex(null);
-    }
-    console.log(conversations);
+    fetch(`http://localhost:3001/conversations?id=${conversationId}`, {
+      method: 'DELETE'
+    })
+      .then(res => {
+        if (res.ok) {
+          console.log('Conversation deleted successfully');
+          setConversations(prevConversations => prevConversations.filter(conv => conv.id !== conversationId));
+          if (selectedConversationIndex !== null && selectedConversation.id === conversationId) {
+            setSelectedConversationIndex(null);
+          }
+        } else {
+          console.error('Failed to delete conversation');
+        }
+      })
+      .catch(err => console.error('Error deleting conversation:', err));
   }
 
   async function handleSendMessage(message) {
@@ -54,25 +71,28 @@ function App() {
       role: 'user'
     };
 
+    fetch(`http://localhost:3001/conversations/messages?id=${selectedConversation.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: message, role: 'user' })
+    }).then(() => setConversations(prevConversations =>
+      prevConversations.map(conv =>
+        conv.id === selectedConversation.id
+          ? { ...conv, messages: [...conv.messages, newMessage] }
+          : conv
+      ))
+    ).then(() => { setShouldRespond(true); });
+
     if (selectedConversation.messages.length === 0) {
       const titleRequest = [{ id: 0, content: message, role: 'user' }, { id: 1, content: "Suggest a short, descriptive title for this conversation.", role: "user" }];
       setShouldRespond(true);
       selectedConversation.name = '';
       await OpenAIService.sendMessage(titleRequest, model,
         (chunk) => {
-          selectedConversation.name += chunk.replace(/"/g, ""); // replace(/^"(.*)"$/, '$1');
+          selectedConversation.name += chunk.replace(/"/g, "");
         }
       );
     }
-
-    setShouldRespond(true);
-    setConversations(prevConversations =>
-      prevConversations.map(conv =>
-        conv.id === selectedConversation.id
-          ? { ...conv, messages: [...conv.messages, newMessage] }
-          : conv
-      )
-    );
   }
 
   useEffect(() => {
@@ -83,29 +103,30 @@ function App() {
   }, [conversations]);
 
   async function handleResponse() {
+    let messageToAppend = "";
+
     try {
       await OpenAIService.sendMessage(
-        selectedConversation.messages.map(
-        msg => ({ content: msg.text, role: msg.role })),
+        selectedConversation.messages.map(msg => ({ content: msg.text, role: msg.role })),
         model,
         (chunk) => {
+          messageToAppend += chunk;
           setConversations(prevConversations =>
             prevConversations.map(conv =>
               conv.id === selectedConversation.id
                 ? {
                   ...conv,
                   messages: (() => {
-                    // If last message is developer, append chunk
                     const lastMsg = conv.messages[conv.messages.length - 1];
-                    if (lastMsg && lastMsg.role === 'developer') {
+                    if (lastMsg && lastMsg.role === 'assistant') {
+                      console.log('Appending chunk:', messageToAppend);
                       return conv.messages.map((msg, idx) =>
                         idx === conv.messages.length - 1
                           ? { ...msg, text: msg.text + (chunk || "") }
                           : msg
                       );
                     } else {
-                      // If no developer message, create one
-                      return [...conv.messages, { id: conv.messages.length + 1, text: chunk || "", role: 'developer' }];
+                      return [...conv.messages, { id: conv.messages.length + 1, text: chunk || "", role: 'assistant' }];
                     }
                   })()
                 }
@@ -114,26 +135,17 @@ function App() {
           );
         }
       );
-
-      // const assistantMessage = {
-      //   id: selectedConversation.messages.length + 1,
-      //   text: aiResponse,
-      //   role: 'developer'
-      // };
-
-      // setConversations(prevConversations =>
-      //   prevConversations.map(conv =>
-      //     conv.id === selectedConversation.id
-      //       ? { ...conv, messages: [...conv.messages, assistantMessage] }
-      //       : conv
-      //   )
-      // );
+      await fetch(`http://localhost:3001/conversations/messages?id=${selectedConversation.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: messageToAppend, role: 'assistant' })
+      });
 
     } catch (error) {
       const errorMessage = {
         id: Date.now() + 1,
         text: "Sorry, I couldn't process your request. Please try again.",
-        role: 'developer'
+        role: 'assistant'
       };
 
       setConversations(prevConversations =>

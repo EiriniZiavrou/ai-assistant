@@ -7,11 +7,6 @@ const server = express();
 
 server.use(cors());
 
-// const conversations = [{ id: 1, name: 'General Chat', messages: [{ id: 1, text: 'Hello!', role: 'user' }, { id: 2, text: 'Hi there! How can I help you?', role: 'developer' }] },
-// { id: 2, name: 'Weather Discussion', messages: [{ id: 1, text: 'What is the weather like?', role: 'user' }, { id: 2, text: 'It is sunny today!', role: 'developer' }] },
-// { id: 3, name: 'Jokes & Fun', messages: [{ id: 1, text: 'Tell me a joke', role: 'user' }, { id: 2, text: 'Why did the chicken cross the road? To get to the other side!', role: 'developer' }] },
-// ];
-
 const db = await JSONFilePreset('./db.json', { conversations: [] });
 const { conversations } = db.data;
 
@@ -71,8 +66,11 @@ server.put('/conversations/messages', async (req, res) => {
 server.post('/conversations', async (req, res) => {
     const newConversation = {};
     newConversation.id = id++;
-    newConversation.name = `Conversation ${newConversation.id}`;
-    newConversation.messages = [];
+    newConversation.name = `Feedback Conversation`;
+    newConversation.messages = [{ id: 1, text: 'You are an AI assistant that asks user feedback about a conference. \
+        Specifically respond to the users feedback and ask what could be improved making a conversation with the user. \
+        When there is no more feedback, make a summary of his feedback.', role: 'developer' },
+        { id: 2, text: 'On a scale of 1-5 how would you rate this conference?', role: 'assistant' }];
     await db.update(({ conversations }) => conversations.push(newConversation));
     res.status(201).json(newConversation);
 });
