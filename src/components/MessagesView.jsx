@@ -3,7 +3,7 @@ import MessageInput from './MessageInput';
 import { useState } from 'react';
 import { MarkdownMessage } from './MarkdownMessage.tsx';
 
-export default function MessagesView({ messages, onSendMessage, hasConversation, onModelChange }) {
+export default function MessagesView({ messages, onSendMessage, hasConversation, onModelChange, onConversationEnd }) {
 
     const [copiedMessageId, setCopiedMessageId] = useState(null);
 
@@ -52,6 +52,12 @@ export default function MessagesView({ messages, onSendMessage, hasConversation,
                         ))}
                     </ul>
                 )}
+
+            </div>
+            <div className="button-container relative">
+                <button className="end-conversation" onClick={onConversationEnd}>
+                    End Conversation
+                </button>
             </div>
             <MessageInput onSendMessage={onSendMessage} disabled={!hasConversation} onModelChange={onModelChange} />
         </div>

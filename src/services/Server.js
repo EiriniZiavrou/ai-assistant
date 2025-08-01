@@ -8,15 +8,9 @@ const server = express();
 
 server.use(cors());
 
-const siteName = "www.skroutz.gr";
-
-const site = SITE_CONFIGS[siteName];
-const details = site.details;
-const category = site.category;
-const goal = site.goal;
-const endgoal = site.endgoal;
-const questions = site.questions;
-const db = await JSONFilePreset(`./db${siteName}.json`, { conversations: [] });
+const siteURL = "www.skroutz.gr";
+const { name, details, category, goal, endgoal, questions } = SITE_CONFIGS[siteURL];
+const db = await JSONFilePreset(`./db_${name}.json`, { conversations: [] });
 const { conversations } = db.data;
 
 let id = conversations.length + 1;

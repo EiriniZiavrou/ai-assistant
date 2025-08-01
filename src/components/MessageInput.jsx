@@ -30,7 +30,6 @@ export default function MessageInput({ onSendMessage, onModelChange, disabled = 
         <form onSubmit={handleSubmit} className="message-input">
             <div className="input-container">
                 <select onChange={handleChange}>
-                    <option id="gpt-3.5-turbo" value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                     <option id="gpt-4" value="gpt-4">gpt-4</option>
                     <option id="gpt-4-turbo" value="gpt-4-turbo">gpt-4-turbo</option>
                 </select>

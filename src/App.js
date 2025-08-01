@@ -64,6 +64,21 @@ function App() {
       .catch(err => console.error('Error deleting conversation:', err));
   }
 
+  async function handleConversationEnd() {
+    console.log('Ending conversation');
+
+    const summary = "Summarize this conversation, highlighting what the user liked and what they didn’t like. Be concise and clear.";
+
+    if (selectedConversation.id !== -1) {
+      try {
+        handleSendMessage(summary);
+      }
+      catch (error) {
+        console.error('Error sending message:', error);
+      }
+    }
+  }
+
   async function handleSendMessage(message) {
     const newMessage = {
       id: selectedConversation.messages.length + 1,
@@ -119,7 +134,6 @@ function App() {
                   messages: (() => {
                     const lastMsg = conv.messages[conv.messages.length - 1];
                     if (lastMsg && lastMsg.role === 'assistant') {
-                      console.log('Appending chunk:', messageToAppend);
                       return conv.messages.map((msg, idx) =>
                         idx === conv.messages.length - 1
                           ? { ...msg, text: msg.text + (chunk || "") }
@@ -178,6 +192,7 @@ function App() {
         <MessagesView
           messages={selectedConversation.messages}
           onSendMessage={handleSendMessage}
+          onConversationEnd={handleConversationEnd}
           hasConversation={!!selectedConversation}
           onModelChange={(newModel) => { handleModelChange(newModel); }}
         >
