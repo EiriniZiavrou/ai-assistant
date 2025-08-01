@@ -1,13 +1,22 @@
 import express from 'express';
 import { JSONFilePreset } from 'lowdb/node';
 import cors from 'cors';
+import { SITE_CONFIGS } from './siteConfigs.js';
 
 const PORT = 3001;
 const server = express();
 
 server.use(cors());
 
-const db = await JSONFilePreset('./db.json', { conversations: [] });
+const siteName = "www.skroutz.gr";
+
+const site = SITE_CONFIGS[siteName];
+const details = site.details;
+const category = site.category;
+const goal = site.goal;
+const endgoal = site.endgoal;
+const questions = site.questions;
+const db = await JSONFilePreset(`./db${siteName}.json`, { conversations: [] });
 const { conversations } = db.data;
 
 let id = conversations.length + 1;
@@ -67,10 +76,18 @@ server.post('/conversations', async (req, res) => {
     const newConversation = {};
     newConversation.id = id++;
     newConversation.name = `Feedback Conversation`;
-    newConversation.messages = [{ id: 1, text: 'You are an AI assistant that asks user feedback about a conference. \
-        Specifically respond to the users feedback and ask what could be improved making a conversation with the user. \
-        When there is no more feedback, make a summary of his feedback.', role: 'developer' },
-        { id: 2, text: 'On a scale of 1-5 how would you rate this conference?', role: 'assistant' }];
+    newConversation.messages = [{
+        id: 1,
+        // text: `Details: ${details}. Goal: ${goal}. Endgoal: ${endgoal}. Make sure you cover these topics: ${questions}. If user is not fully satisfied, ask them to elaborate on their feedback.`,
+        text: `Details: ${details}. Goal: ${goal}. Endgoal: ${endgoal}. If user is not fully satisfied, ask them to elaborate on their feedback.`,
+        role: 'developer'
+    },
+    {
+        id: 2,
+        text: `Hello! Thank you for attending our ${category}. On a scale of 1-5, how would you rate your overall experience?`,
+        role: 'assistant'
+    }
+    ];
     await db.update(({ conversations }) => conversations.push(newConversation));
     res.status(201).json(newConversation);
 });
