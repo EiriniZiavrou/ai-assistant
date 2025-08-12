@@ -5,6 +5,8 @@ import ConversationsMenu from './components/ConversationsMenu.jsx';
 import MessagesView from './components/MessagesView.jsx';
 import { OpenAIService } from './services/OpenaiService.js';
 import { CONFIG } from './services/config.js';
+import {TemplateForm} from './TemplateForm.jsx';
+import FileSaver, { saveAs } from "file-saver";
 
 function App() {
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(null);
@@ -13,6 +15,8 @@ function App() {
   const [shouldRespond, setShouldRespond] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [model, setModel] = useState(CONFIG.DEFAULT_MODEL);
+  const [isDeveloper, setIsDeveloper] = useState(false);
+  const [wantsToCreateTemplate, setWantsToCreateTemplate] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:3001/conversations', {
@@ -65,13 +69,11 @@ function App() {
   }
 
   async function handleConversationEnd() {
-    console.log('Ending conversation');
-
     const summary = "Summarize this conversation, highlighting what the user liked and what they didn’t like. Be concise and clear.";
 
     if (selectedConversation.id !== -1) {
       try {
-        handleSendMessage(summary);
+        await handleSendMessage(summary, true);
       }
       catch (error) {
         console.error('Error sending message:', error);
@@ -79,17 +81,19 @@ function App() {
     }
   }
 
-  async function handleSendMessage(message) {
+  async function handleSendMessage(message, isDeveloper = false) {
+    setIsDeveloper(isDeveloper);
+
     const newMessage = {
       id: selectedConversation.messages.length + 1,
       text: message,
-      role: 'user'
+      role: isDeveloper ? 'developer' : 'user'
     };
 
     fetch(`http://localhost:3001/conversations/messages?id=${selectedConversation.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: message, role: 'user' })
+      body: JSON.stringify({ text: message, role: isDeveloper ? 'developer' : 'user' })
     }).then(() => setConversations(prevConversations =>
       prevConversations.map(conv =>
         conv.id === selectedConversation.id
@@ -98,22 +102,20 @@ function App() {
       ))
     ).then(() => { setShouldRespond(true); });
 
-    if (selectedConversation.messages.length === 0) {
-      const titleRequest = [{ id: 0, content: message, role: 'user' }, { id: 1, content: "Suggest a short, descriptive title for this conversation.", role: "user" }];
-      setShouldRespond(true);
-      selectedConversation.name = '';
-      await OpenAIService.sendMessage(titleRequest, model,
-        (chunk) => {
-          selectedConversation.name += chunk.replace(/"/g, "");
-        }
-      );
-    }
+    // if (selectedConversation.messages.length === 0) {
+    //   const titleRequest = [{ id: 0, content: message, role: 'user' }, { id: 1, content: "Suggest a short, descriptive title for this conversation.", role: "user" }];
+    //   setShouldRespond(true);
+    //   selectedConversation.name = '';
+    //   await OpenAIService.sendMessage(titleRequest, model,
+    //     (chunk) => {selectedConversation.name += chunk.replace(/"/g, "");}
+    //   );
+    // }
   }
 
   useEffect(() => {
     if (shouldRespond) {
       setShouldRespond(false);
-      handleResponse();
+      handleResponse(isDeveloper);
     }
   }, [conversations]);
 
@@ -133,14 +135,14 @@ function App() {
                   ...conv,
                   messages: (() => {
                     const lastMsg = conv.messages[conv.messages.length - 1];
-                    if (lastMsg && lastMsg.role === 'assistant') {
+                    if (lastMsg && lastMsg.role === (isDeveloper ? 'developer' : 'assistant')) {
                       return conv.messages.map((msg, idx) =>
                         idx === conv.messages.length - 1
                           ? { ...msg, text: msg.text + (chunk || "") }
                           : msg
                       );
                     } else {
-                      return [...conv.messages, { id: conv.messages.length + 1, text: chunk || "", role: 'assistant' }];
+                      return [...conv.messages, { id: conv.messages.length + 1, text: chunk || "", role: isDeveloper ? 'developer' : 'assistant' }];
                     }
                   })()
                 }
@@ -152,8 +154,16 @@ function App() {
       await fetch(`http://localhost:3001/conversations/messages?id=${selectedConversation.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: messageToAppend, role: 'assistant' })
+        body: JSON.stringify({ text: messageToAppend, role: isDeveloper ? 'developer' : 'assistant' })
       });
+
+      if (isDeveloper) {
+        console.log("Developer message sent:", messageToAppend);
+        FileSaver.saveAs(
+          new Blob([messageToAppend], { type: "text/plain;charset=utf-8" }),
+          `conversation_${selectedConversation.id}.txt`
+        );
+      }
 
     } catch (error) {
       const errorMessage = {
@@ -176,6 +186,9 @@ function App() {
     setIsMenuOpen(!isMenuOpen);
   }
 
+  if (wantsToCreateTemplate) {
+    return <TemplateForm />;
+  }
   return (
     <div className="App">
       <TopMenu title={selectedConversation.name} onMenuToggle={toggleMenu}></TopMenu>

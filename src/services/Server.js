@@ -9,7 +9,7 @@ const server = express();
 server.use(cors());
 
 const siteURL = "www.skroutz.gr";
-const { name, details, category, goal, endgoal, questions } = SITE_CONFIGS[siteURL];
+const { name, details, category, goal, endgoal, questions, firstQuestion } = SITE_CONFIGS[siteURL];
 const db = await JSONFilePreset(`./db_${name}.json`, { conversations: [] });
 const { conversations } = db.data;
 
@@ -72,13 +72,15 @@ server.post('/conversations', async (req, res) => {
     newConversation.name = `Feedback Conversation`;
     newConversation.messages = [{
         id: 1,
-        // text: `Details: ${details}. Goal: ${goal}. Endgoal: ${endgoal}. Make sure you cover these topics: ${questions}. If user is not fully satisfied, ask them to elaborate on their feedback.`,
-        text: `Details: ${details}. Goal: ${goal}. Endgoal: ${endgoal}. If user is not fully satisfied, ask them to elaborate on their feedback.`,
+        text: `Details of the site: ${details}. Goal: ${goal}. Endgoal: ${endgoal}. \
+        Make sure you cover these topics throughout the conversation, not in one question: ${questions}.\
+        If user is not fully satisfied, ask them to elaborate on their feedback.\
+        Never go off topic. Never answer questions about other topics.`,
         role: 'developer'
     },
     {
         id: 2,
-        text: `Hello! Thank you for attending our ${category}. On a scale of 1-5, how would you rate your overall experience?`,
+        text: `${firstQuestion}`,
         role: 'assistant'
     }
     ];

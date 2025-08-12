@@ -23,7 +23,7 @@ export default function ConversationsMenu({ conversations, onConversationSelect,
                     >
                         <div className='conversation-content'>
                             <div className='conversation-name'>{conversation.name}</div>
-                            <div className='message-count'>({conversation.messages.length-1} messages)</div>
+                            <div className='message-count'>({conversation.messages.filter(msg => msg.role !== "developer").length} messages)</div>
                         </div>
                         <button
                             className='delete-button'
